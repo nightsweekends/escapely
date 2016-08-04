@@ -1,65 +1,102 @@
-function compressHtml(allHTML, headstatus) {
-	var headHTML = "";
-	var removeThis = "";
-	if (headstatus != true) {
-		//Compress all the things!
-		allHTML = allHTML.replace(/(\r\n|\n|\r|\t)/gm,"");
-		allHTML = allHTML.replace(/\s+/g," ");
-	} else {
-		//Don't compress the head
-		allHTML = allHTML.replace(new RegExp("</HEAD","gi"),'</head');
-		allHTML = allHTML.replace(new RegExp("</head ","gi"),'</head');
+document.addEventListener('DOMContentLoaded', function loadListener() {
+  const dropTarget = document.querySelector('#drop-target');
+  const codeOutput = document.querySelector('.code-output');
+  const resultsContainer = document.querySelector('.results');
 
-		var bodySplit = "</head>";
-		var i = allHTML.indexOf(bodySplit) != -1;
-		if (i == true) {
-			var bodySplit = "</head>";
-			tempo = allHTML.split(new RegExp(bodySplit,'i'));
-			headHTML = tempo[0];
-			allHTML = tempo[1];
-		} else {
-			bodySplit = "";
-		}
-		allHTML = allHTML.replace(/(\r\n|\n|\r|\t)/gm,"");
-		allHTML = allHTML.replace(/\s+/g," ");
-		allHTML = headHTML + bodySplit + '\n' + allHTML;
-	}
-  return allHTML;
-}
-
-var escapeString = (function() {
-  var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
-      escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
-      gap,
-      indent,
-      meta = {    // table of character substitutions
-        '\b': '\\b',
-        '\t': '\\t',
-        '\n': '\\n',
-        '\f': '\\f',
-        '\r': '\\r',
-        '"' : '\\"',
-        '\\': '\\\\'
-      },
-      rep;
-
-  function quote(string) {
-    // If the string contains no control characters, no quote characters, and no
-    // backslash characters, then we can safely slap some quotes around it.
-    // Otherwise we must also replace the offending characters with safe escape
-    // sequences.
-
-    escapable.lastIndex = 0;
-    return escapable.test(string) ? '"' + string.replace(escapable, function (a) {
-      var c = meta[a];
-      return typeof c === 'string' ? c :
-      '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
-    }) + '"' : '"' + string + '"';
+  function addHoverClass(elem) {
+    elem.classList.add('hover');
   }
 
-  return quote;
-})();
+  function removeHoverClass(elem) {
+    elem.classList.remove('hover');
+  }
 
-function compressAndEscapeHtml(rawHtml, compressHead) {
-  return escapeString(compressHtml(rawHtml, compressHead));
-}
+  function createCodeOutputElem() {
+    const elem = document.createElement('output');
+    elem.className = 'code-output';
+    return elem;
+  }
+
+  function dragEventHandler(e) {
+    e.preventDefault();
+    commands[e.type](e);
+  }
+
+  function dragEnterHandler(e) {
+    console.log('dragenter: %o', e);
+    e.dataTransfer.dropEffect = 'copy';
+    addHoverClass(dropTarget);
+  }
+
+  function dragLeaveHandler(e) {
+    console.log('dragleave: %o', e);
+    removeHoverClass(dropTarget);
+  }
+
+  function dragOverHandler(e) {
+    // no-op
+  }
+
+  function compressHtml(raw) {
+    return raw.replace(/(\r\n|\n|\r|\t)/gm,"")
+    .replace(/\s+/g," ")
+    .replace(/"/g, "'");
+  }
+
+  function getTextFromFile(file, cb) {
+    let reader = new FileReader();
+    reader.addEventListener('loadend', () => {
+      cb(reader.error, reader.result);
+    });
+    reader.readAsText(file);
+  }
+
+  function renderTextToElement(text, elem) {
+    elem.textContent = text;
+  }
+
+  function selectAndCopyAllText(elem) {
+    const selectRange = document.createRange();
+    selectRange.selectNode(elem);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(selectRange);
+    document.execCommand('copy');
+  }
+
+  function dropHandler(e) {
+    console.log('drop: %o', e);
+    removeHoverClass(dropTarget);
+
+    if (e.dataTransfer.types[0] !== 'Files' || e.dataTransfer.types.length > 1) return;
+
+    const file = e.dataTransfer.files[0];
+    console.log('drop, dataTransfer.types: %o', e.dataTransfer.types);
+    console.log('drop, sliced dataTransfer.files: %o', [].slice.call(e.dataTransfer.files));
+    if (file.type === 'text/html') {
+      getTextFromFile(file, (err, result) => {
+        if (err) throw new Error(err);
+        renderTextToElement(compressHtml(result), codeOutput);
+      });
+    } else {
+      window.alert(`Please use valid HTML instead of this ${file.type} garbage`);
+    }
+  }
+
+  const commands = {
+    dragenter: dragEnterHandler,
+    dragleave: dragLeaveHandler,
+    dragover: dragOverHandler,
+    drop: dropHandler
+  };
+
+  ['dragenter', 'dragleave', 'dragover', 'drop'].forEach(type => {
+    dropTarget.addEventListener(type, dragEventHandler);
+  });
+
+  codeOutput.addEventListener('click', e => {
+    e.preventDefault();
+    selectAndCopyAllText(e.currentTarget);
+  });
+
+  document.removeEventListener('DOMContentLoaded', loadListener);
+});
