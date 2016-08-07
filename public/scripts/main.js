@@ -3,7 +3,6 @@
 document.addEventListener('DOMContentLoaded', function loadListener() {
   const dropTarget = document.querySelector('#drop-target');
   const codeOutput = document.querySelector('.code-output');
-  const resultsContainer = document.querySelector('.results');
 
   function addHoverClass(elem) {
     elem.classList.add('hover');
@@ -13,29 +12,18 @@ document.addEventListener('DOMContentLoaded', function loadListener() {
     elem.classList.remove('hover');
   }
 
-  function createCodeOutputElem() {
-    const elem = document.createElement('output');
-    elem.className = 'code-output';
-    return elem;
-  }
-
-  function dragEventHandler(e) {
-    e.preventDefault();
-    commands[e.type](e);
-  }
-
   function dragEnterHandler(e) {
-    console.log('dragenter: %o', e);
+    // console.log('dragenter: %o', e);
     e.dataTransfer.dropEffect = 'copy';
     addHoverClass(dropTarget);
   }
 
-  function dragLeaveHandler(e) {
-    console.log('dragleave: %o', e);
+  function dragLeaveHandler() {
+    // console.log('dragleave: %o', e);
     removeHoverClass(dropTarget);
   }
 
-  function dragOverHandler(e) {
+  function dragOverHandler() {
     // no-op
   }
 
@@ -66,14 +54,14 @@ document.addEventListener('DOMContentLoaded', function loadListener() {
   }
 
   function dropHandler(e) {
-    console.log('drop: %o', e);
+    // console.log('drop: %o', e);
     removeHoverClass(dropTarget);
 
     if (e.dataTransfer.types[0] !== 'Files' || e.dataTransfer.types.length > 1) return;
 
     const file = e.dataTransfer.files[0];
-    console.log('drop, dataTransfer.types: %o', e.dataTransfer.types);
-    console.log('drop, sliced dataTransfer.files: %o', [].slice.call(e.dataTransfer.files));
+    // console.log('drop, dataTransfer.types: %o', e.dataTransfer.types);
+    // console.log('drop, sliced dataTransfer.files: %o', [].slice.call(e.dataTransfer.files));
     if (file.type === 'text/html') {
       getTextFromFile(file, (err, result) => {
         if (err) throw new Error(err);
@@ -90,6 +78,11 @@ document.addEventListener('DOMContentLoaded', function loadListener() {
     dragover: dragOverHandler,
     drop: dropHandler
   };
+
+  function dragEventHandler(e) {
+    e.preventDefault();
+    commands[e.type](e);
+  }
 
   ['dragenter', 'dragleave', 'dragover', 'drop'].forEach(type => {
     dropTarget.addEventListener(type, dragEventHandler);
