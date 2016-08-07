@@ -1,5 +1,7 @@
 # Munder
 
+[![Build Status](https://travis-ci.org/nightsweekends/munder.svg?branch=master)](https://travis-ci.org/nightsweekends/munder)
+
 - Compress HTML and stuff for embedding
 
 ## How to Setup
