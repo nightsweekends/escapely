@@ -1,2 +1,3 @@
-# escapely
-Compress and escape HTML for JSON
+# Munder
+
+- Compress HTML and stuff for embeding
