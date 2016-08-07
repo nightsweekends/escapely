@@ -11,7 +11,7 @@ $ npm install
 
 To develop: `$ npm run dev`
 
- - http://localhost:3000
+ - [http://localhost:3000](http://localhost:3000)
 
 To generate: `$ npm run compile`
 
