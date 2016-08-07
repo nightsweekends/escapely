@@ -1,3 +1,5 @@
+/* globals feature */
+
 document.addEventListener('DOMContentLoaded', function loadListener() {
   const dropTarget = document.querySelector('#drop-target');
   const codeOutput = document.querySelector('.code-output');
@@ -100,3 +102,6 @@ document.addEventListener('DOMContentLoaded', function loadListener() {
 
   document.removeEventListener('DOMContentLoaded', loadListener);
 });
+
+
+feature.testAll();

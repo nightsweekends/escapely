@@ -1,0 +1,34 @@
+{
+  "globals": {
+    "name": "Munder",
+    "title": "Munder",
+    "url": null,
+    "description": "Munder stuff",
+    "keywords": "mundering",
+    "domain": null,
+    "authors": {
+      "ianrose": {
+        "name": "Ian Rose",
+        "email": "ian@ianrose.me",
+        "twitter": "thatianrose",
+        "github": "ianrose"
+      },
+      "maxpeterson": {
+        "name": "Max Peterson",
+        "github": "maxrpeterson"
+      }
+    },
+    "service": {
+      "analytics": "UA-XXXXXX-1",
+      "service": "example",
+      "googlefonts": ["Merriweather:300,300italic,700,700italic,900:latin", "Arimo:400,700"],
+      "googleverification": null,
+      "facebookid": null,
+      "socialimage": "images/social-image.jpg",
+      "appleid": null
+    },
+    "thanks": {
+    }
+  },
+  "domains": []
+}

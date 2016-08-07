@@ -6,3 +6,5 @@ node_modules/
 .idea/workspace.xml
 .tmp
 bower_components
+public/vendor
+www

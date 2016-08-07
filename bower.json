@@ -1,0 +1,12 @@
+{
+  "name": "munder",
+  "private": true,
+  "dependencies": {
+    "feature.js": "https://github.com/viljamis/feature.js.git#1.0.1"
+  },
+  "install": {
+    "path": "public/vendor",
+    "sources": {
+    }
+  }
+}
