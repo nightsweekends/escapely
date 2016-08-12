@@ -2,5 +2,22 @@
 @import 'config';
 
 body {
-background-color: white;
+  background-color: white;
+  font-family: sans-serif;
+}
+
+.wrapper {
+  background-color: #f3f5f6;
+  display: flex;
+  align-items: stretch;
+  height: 100vh;
+}
+
+.container {
+  border: 1px solid #cfd6d9;
+  width: 50%;
+}
+
+.container--result {
+  background-color: #fff;
 }
